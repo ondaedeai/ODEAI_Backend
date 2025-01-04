@@ -1,20 +1,20 @@
-import touristAttractionService from "../services/touristAttraction.service.js";
+import testimonialsService from "../services/testimonials.service.js";
 
-const getAttractions = async (req, res) => {
+const getTestimonials = async (req, res) => {
   try {
-    let attractions = await touristAttractionService.findAllService();
+    let testimonials = await testimonialsService.findAllService();
     const serverUrl = req.protocol + "://" + req.get("host");
-    attractions = attractions.map((attraction) => {
-      if (attraction.image) {
-        attraction.image = `${serverUrl}/touristAttraction/image/${attraction._id}`;
+    testimonials = testimonials.map((testimonials) => {
+      if (testimonials.image) {
+        testimonials.image = `${serverUrl}/testimonials/image/${testimonials._id}`;
       }
-      return attraction;
+      return testimonials;
     });
 
-    if (!attractions) attractions = [];
+    if (!testimonials) testimonials = [];
     // TODO: Adicionar lógica para avaliações
 
-    res.status(200).json(attractions);
+    res.status(200).json(testimonials);
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -23,13 +23,13 @@ const getAttractions = async (req, res) => {
 const getImage = async (req, res) => {
   try {
     const id = req.params.id;
-    const attraction = await touristAttractionService.findByIdService(id);
+    const testimonials = await testimonialsService.findByIdService(id);
 
-    if (!attraction || !attraction.image) {
+    if (!testimonials || !testimonials.image) {
       return res.status(404).json({ error: "Image not found" });
     }
 
-    const base64Data = attraction.image;
+    const base64Data = testimonials.image;
     const imgBuffer = Buffer.from(base64Data, "base64");
 
     res.writeHead(200, {
@@ -42,9 +42,9 @@ const getImage = async (req, res) => {
   }
 };
 
-const addAttraction = async (req, res) => {
+const addTestimonials = async (req, res) => {
   try {
-    const requiredFields = ["name", "address", "openingHours", "description"];
+    const requiredFields = ["title", "nameInterviewed", "interviewerName", "description"];
 
     for (const field of requiredFields) {
       if (!req.body[field]) {
@@ -56,21 +56,21 @@ const addAttraction = async (req, res) => {
       return res.status(400).json({ error: "Please upload an image" });
     }
 
-    const { name, address, openingHours, description } = req.body;
+    const { title, nameInterviewed, interviewerName, description } = req.body;
 
     const base64Data = req.file.buffer.toString('base64');
 
-    const attraction = await touristAttractionService.createService({
-      name,
-      address,
-      openingHours,
+    const testimonials = await testimonialsService.createService({
+      title,
+      nameInterviewed,
+      interviewerName,
       description,
       image: base64Data,
     });
 
     res.status(201).json({
-      message: "Tourist Attraction registered successfully",
-      id: attraction._id,
+      message: "Testimonials registered successfully",
+      id: testimonials._id,
     });
   } catch (error) {
     return res
@@ -79,17 +79,17 @@ const addAttraction = async (req, res) => {
   }
 };
 
-const updateAttraction = async (req, res) => {
+const updateTestimonials = async (req, res) => {
   try {
     const id = req.params.id;
 
     if (!id) {
       return res
         .status(400)
-        .json({ error: `Please add the attraction id as a request param` });
+        .json({ error: `Please add the testimonials id as a request param` });
     }
 
-    const requiredFields = ["name", "address", "openingHours", "description"];
+    const requiredFields = ["title", "nameInterviewed", "interviewerName", "description"];
 
     for (const field of requiredFields) {
       if (!req.body[field] && !req.file) {
@@ -101,7 +101,7 @@ const updateAttraction = async (req, res) => {
       }
     }
 
-    const { name, address, openingHours, description } = req.body;
+    const { title, nameInterviewed, interviewerName, description } = req.body;
     let base64Data;
 
     if (req.file) {
@@ -111,23 +111,23 @@ const updateAttraction = async (req, res) => {
     //TODO: criar middleware que pega o id do usuário e testa se é admin
 
     const updatedData = {};
-    if (name) updatedData.name = name;
-    if (address) updatedData.address = address;
-    if (openingHours) updatedData.openingHours = openingHours;
+    if (title) updatedData.title = title;
+    if (nameInterviewed) updatedData.nameInterviewed = nameInterviewed;
+    if (interviewerName) updatedData.interviewerName = interviewerName;
     if (description) updatedData.description = description;
     if (base64Data) updatedData.image = base64Data;
 
-    const result = await touristAttractionService.updateService(
+    const result = await testimonialsService.updateService(
       id,
       updatedData
     );
 
     if (!result) {
-      res.status(404).json({ message: "Tourist Attraction not found" });
+      res.status(404).json({ message: "Testimonials not found" });
     } else {
       res
         .status(204)
-        .json({ message: "Tourist Attraction update successfully" });
+        .json({ message: "Testimonials update successfully" });
     }
   } catch (error) {
     console.log(error);
@@ -135,22 +135,22 @@ const updateAttraction = async (req, res) => {
   }
 };
 
-const deleteAttraction = async (req, res) => {
+const deleteTestimonials = async (req, res) => {
   try {
     const id = req.params.id;
 
     if (!id) {
       return res
         .status(400)
-        .json({ message: `Please add the attraction id as a request param` });
+        .json({ message: `Please add the testimonials id as a request param` });
     }
 
-    const result = await touristAttractionService.deleteService(id);
+    const result = await testimonialsService.deleteService(id);
 
     if (!result) {
-      res.status(404).json({ error: "Tourist Attraction not found" });
+      res.status(404).json({ error: "Testimonials not found" });
     } else {
-      res.status(204).json({ menssage: "Attraction succesfully deleted" });
+      res.status(204).json({ menssage: "Testimonials succesfully deleted" });
     }
   } catch (error) {
     console.log(error);
@@ -159,9 +159,9 @@ const deleteAttraction = async (req, res) => {
 };
 
 export default {
-  getAttractions,
-  addAttraction,
-  deleteAttraction,
-  updateAttraction,
+  getTestimonials,
+  addTestimonials,
+  deleteTestimonials,
+  updateTestimonials,
   getImage,
 };
