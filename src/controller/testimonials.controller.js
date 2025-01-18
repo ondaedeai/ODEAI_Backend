@@ -41,7 +41,7 @@ const getImage = async (req, res) => {
 
 const addTestimonials = async (req, res) => {
   try {
-    const requiredFields = ["title", "nameInterviewed", "interviewerName", "description", "data"];
+    const requiredFields = ["title", "nameInterviewed", "interviewerName", "description", "date"];
 
     for (const field of requiredFields) {
       if (!req.body[field]) {
@@ -53,7 +53,7 @@ const addTestimonials = async (req, res) => {
       return res.status(400).json({ error: "Please upload an image" });
     }
 
-    const { title, nameInterviewed, interviewerName, description, data } = req.body;
+    const { title, nameInterviewed, interviewerName, description, date } = req.body;
 
     const base64Data = req.file.buffer.toString('base64');
 
@@ -62,7 +62,7 @@ const addTestimonials = async (req, res) => {
       nameInterviewed,
       interviewerName,
       description,
-      data,
+      date,
       image: base64Data,
     });
 
@@ -87,7 +87,7 @@ const updateTestimonials = async (req, res) => {
         .json({ error: `Please add the testimonials id as a request param` });
     }
 
-    const requiredFields = ["title", "nameInterviewed", "interviewerName", "description", "data"];
+    const requiredFields = ["title", "nameInterviewed", "interviewerName", "description", "date"];
 
     for (const field of requiredFields) {
       if (!req.body[field] && !req.file) {
@@ -99,7 +99,7 @@ const updateTestimonials = async (req, res) => {
       }
     }
 
-    const { title, nameInterviewed, interviewerName, description, data} = req.body;
+    const { title, nameInterviewed, interviewerName, description, date} = req.body;
     let base64Data;
 
     if (req.file) {
@@ -113,7 +113,7 @@ const updateTestimonials = async (req, res) => {
     if (nameInterviewed) updatedData.nameInterviewed = nameInterviewed;
     if (interviewerName) updatedData.interviewerName = interviewerName;
     if (description) updatedData.description = description;
-    if (data) updatedData.data = data;
+    if (date) updatedData.date = date;
     if (base64Data) updatedData.image = base64Data;
 
     const result = await testimonialsService.updateService(
