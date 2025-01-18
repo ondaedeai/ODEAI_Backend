@@ -51,7 +51,7 @@ const register = async (req, res) => {
     }
 
     const { name, email, password, city, state } = req.body;
-    const isAdmin = false;
+    const isAdmin = true;
     if (req.body.isAdmin) {
       isAdmin = req.body.isAdmin;
     }
