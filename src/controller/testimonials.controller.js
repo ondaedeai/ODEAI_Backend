@@ -11,9 +11,6 @@ const getTestimonials = async (req, res) => {
       return testimonials;
     });
 
-    if (!testimonials) testimonials = [];
-    // TODO: Adicionar lógica para avaliações
-
     res.status(200).json(testimonials);
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
