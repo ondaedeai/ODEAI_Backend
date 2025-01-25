@@ -463,12 +463,12 @@ export default {
           },
         },
       },
-      "/touristAttraction/all": {
+      "/testimonials/all": {
         get: {
-          summary: "Busca todos os pontos turísticos (admin)",
+          summary: "Busca todos os depoimentos (admin)",
           description:
-            "Retorna uma lista de todos os pontos turísticos cadastrados no sistema, incluindo informações sobre a imagem de cada atração, se disponível.",
-          operationId: "getAttractions",
+            "Retorna uma lista de todos os depoimentos cadastrados no sistema, incluindo informações sobre a imagem de cada depoimento, se disponível.",
+          operationId: "getTestimonials",
           security: [
             {
               bearerAuth: [],
@@ -477,29 +477,31 @@ export default {
           responses: {
             200: {
               description:
-                "Lista de atrações turísticas retornada com sucesso.",
+                "Lista de depoimentos retornada com sucesso.",
               content: {
                 "application/json": {
                   schema: {
                     type: "array",
                     items: {
-                      $ref: "#/components/schemas/TouristAttraction",
+                      $ref: "#/components/schemas/testimonials",
                     },
                   },
                   example: [
                     {
-                      name: "Ponto turístico A",
-                      address: "Rua A, nº 123",
-                      openingHours: "09:00 - 18:00",
-                      description: "Descrição do Ponto Turístico A",
-                      image: "/image/ponto_turistico_a.jpg",
+                      title : "Depoimento 1",
+                      nameInterviewed: "Entrevistado 1",
+                      interviewerName: "Entrevistador 1",
+                      description: "Descrição do depoimento 1",
+                      date : "2021-10-10",
+                      image: "/image/depoimento_a.jpg",
                     },
                     {
-                      name: "Ponto turístico B",
-                      address: "Av. B, nº 456",
-                      openingHours: "10:00 - 17:00",
-                      description: "Descrição do Ponto Turístico B",
-                      image: "/image/ponto_turistico_b.jpg",
+                      title : "Depoimento 2",
+                      nameInterviewed: "Entrevistado 2",
+                      interviewerName: "Entrevistador 2",
+                      description: "Descrição do depoimento 2",
+                      date : "2025-10-10",
+                      image: "/image/depoimento_b.jpg",
                     },
                   ],
                 },
@@ -515,11 +517,11 @@ export default {
           },
         },
       },
-      "/touristAttraction/image/{id}": {
+      "/testimonials/image/{id}": {
         get: {
-          summary: "Obtém a imagem de uma atração turística",
+          summary: "Obtém a imagem de um depoimento",
           description:
-            "Retorna a imagem correspondente ao ID da atração turística",
+            "Retorna a imagem correspondente ao ID do depoimento",
           operationId: "getImage",
           security: [
             {
@@ -530,7 +532,7 @@ export default {
             {
               name: "id",
               in: "path",
-              description: "ID da atração turística",
+              description: "ID do depoimento",
               required: true,
               schema: {
                 type: "string",
@@ -558,12 +560,12 @@ export default {
           },
         },
       },
-      "/touristAttraction/{id}": {
+      "/testimonials/{id}": {
         delete: {
-          summary: "Deleta uma atração turística",
+          summary: "Deleta um depoimento",
           description:
-            "Remove a atração turística correspondente ao ID fornecido",
-          operationId: "deleteTouristAttraction",
+            "Remove o depoimento correspondente ao ID fornecido",
+          operationId: "deleteTestimonial",
           security: [
             {
               bearerAuth: [],
@@ -573,7 +575,7 @@ export default {
             {
               name: "id",
               in: "path",
-              description: "ID da atração turística",
+              description: "ID do depoimento",
               required: true,
               schema: {
                 type: "string",
@@ -582,10 +584,10 @@ export default {
           ],
           responses: {
             204: {
-              description: "Atração turística deletada com sucesso",
+              description: "Depoimento deletado com sucesso",
             },
             404: {
-              description: "Atração turística não encontrada",
+              description: "Depoimento não encontrado",
             },
             500: {
               description: "Erro interno do servidor. Contate o administrador.",
@@ -593,11 +595,11 @@ export default {
           },
         },
       },
-      "/touristAttraction/create": {
+      "/testimonial/create": {
         post: {
-          summary: "Cria um ponto turístico (admin)",
-          description: "Realiza a criação de um ponto turístico",
-          operationId: "addAttraction",
+          summary: "Cria um depoimento (admin)",
+          description: "Realiza a criação de um depoimento",
+          operationId: "addTestimonial",
           security: [
             {
               bearerAuth: [],
@@ -609,22 +611,26 @@ export default {
                 schema: {
                   type: "object",
                   properties: {
-                    name: {
+                    title: {
                       type: "string",
-                      example: "Ponto turístico X",
+                      example: "Depoimento X",
                     },
-                    address: {
+                    nameInterviewed: {
                       type: "string",
-                      example: "Rua Exemplo, n 001",
+                      example: "Entrevistado X",
                     },
-                    openingHours: {
+                    interviewerName: {
                       type: "string",
-                      example: "Seg a sex -> 09hrs - 18hrs",
+                      example: "Entrevistador X",
                     },
                     description: {
                       type: "string",
                       example:
-                        "Esta é uma longa descrição exemplo de uma atração turística",
+                        "Esta é uma longa descrição exemplo de um depoimento",
+                    },
+                    date : {
+                      type: "string",
+                      example: "2021-10-10",
                     },
                     image: {
                       type: "string",
@@ -633,10 +639,12 @@ export default {
                     },
                   },
                   required: [
+                    "title",
                     "name",
-                    "address",
-                    "openingHours",
+                    "nameInterviewed",
+                    "interviewerName",
                     "description",
+                    "date",
                     "image",
                   ],
                 },
@@ -645,7 +653,7 @@ export default {
           },
           responses: {
             201: {
-              description: "Atração Turística registrada com sucesso",
+              description: "Depoimento registrado com sucesso",
             },
             400: {
               description: "Campos obrigatórios em falta",
@@ -653,12 +661,12 @@ export default {
           },
         },
       },
-      "/touristAttraction/{id}/": {
+      "/testimonial/{id}/": {
         patch: {
-          summary: "Atualiza um ponto turístico (admin)",
+          summary: "Atualiza um depoimento (admin)",
           description:
-            "Realiza uma atualização em um ponto turístico definido por ID",
-          operationId: "updateAttraction",
+            "Realiza uma atualização em um depoimento definido por ID",
+          operationId: "updateTestimonial",
           security: [
             {
               bearerAuth: [],
@@ -668,7 +676,7 @@ export default {
             {
               name: "id",
               in: "path",
-              description: "ID da atração turística a ser alterada",
+              description: "ID do depoimento a ser alterado",
               required: true,
               schema: {
                 type: "string",
@@ -681,22 +689,26 @@ export default {
                 schema: {
                   type: "object",
                   properties: {
-                    name: {
+                    title: {
                       type: "string",
-                      example: "Ponto turístico X",
+                      example: "Depoimento X",
                     },
-                    address: {
+                    nameInterviewed: {
                       type: "string",
-                      example: "Rua Exemplo, n 001",
+                      example: "Entrevistado X",
                     },
-                    openingHours: {
+                    interviewerName: {
                       type: "string",
-                      example: "Seg a sex -> 09hrs - 18hrs",
+                      example: "Entrevistador X",
                     },
                     description: {
                       type: "string",
                       example:
-                        "Esta é uma longa descrição exemplo de uma atração turística",
+                        "Esta é uma longa descrição exemplo de um depoimento",
+                    },
+                    date : {
+                      type: "string",
+                      example: "2021-10-10",
                     },
                     image: {
                       type: "string",
@@ -715,10 +727,10 @@ export default {
           },
           responses: {
             204: {
-              description: "Atração Turística atualizada com sucesso",
+              description: "Depoimento atualizado com sucesso",
             },
             404: {
-              description: "Atração Turística não encontrada",
+              description: "Depoimento não encontrado",
             },
             400: {
               description: "Campos obrigatórios em falta",
@@ -727,9 +739,9 @@ export default {
         },
       },
       delete: {
-        summary: "remove um ponto turístico (admin)",
-        description: "Realiza a remoção de um ponto turístico definido por ID",
-        operationId: "deleteAttraction",
+        summary: "remove um depoimento (admin)",
+        description: "Realiza a remoção de um depoimento definido por ID",
+        operationId: "deleteTestimonial",
         security: [
           {
             bearerAuth: [],
@@ -739,7 +751,7 @@ export default {
           {
             name: "id",
             in: "path",
-            description: "ID do ponto turístico a ser removido",
+            description: "ID do depoimento a ser removido",
             required: true,
             schema: {
               type: "string",
@@ -748,278 +760,11 @@ export default {
         ],
         responses: {
           204: {
-            description: "Atração Turística removida com sucesso",
+            description: "Depoimento removido com sucesso",
           },
           404: {
-            description: "Atração Turística não encontrada",
+            description: "Depoimento não encontrado",
           },
-        },
-      },
-      "/reviews/{TouristAttractionId}": {
-        post: {
-          summary: "Cria uma nova avaliação",
-          description:
-            "Cria uma nova avaliação para uma atração turística específica",
-          operationId: "createReview",
-          parameters: [
-            {
-              name: "TouristAttractionId",
-              in: "path",
-              required: true,
-              description: "ID da atração turística",
-              schema: {
-                type: "string",
-              },
-            },
-          ],
-          requestBody: {
-            required: true,
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    rating: {
-                      type: "number",
-                      description: "Classificação da atração turística",
-                      minimum: 1,
-                      maximum: 5,
-                    },
-                  },
-                  required: ["rating"],
-                },
-                examples: {
-                  review: {
-                    summary: "Exemplo de avaliação",
-                    value: {
-                      rating: 4,
-                    },
-                  },
-                },
-              },
-            },
-          },
-          responses: {
-            201: {
-              description: "Avaliação criada com sucesso",
-              content: {
-                "application/json": {
-                  schema: {
-                    $ref: "#/components/schemas/Review",
-                  },
-                },
-              },
-            },
-            404: {
-              description: "Atração turística não encontrada.",
-            },
-            400: {
-              description: "Dados inválidos",
-            },
-          },
-          security: [
-            {
-              bearerAuth: [],
-            },
-          ],
-        },
-      },
-      // "/reviews/tourist-attraction/{TouristAttractionId}": {
-      //   get: {
-      //     summary: "Obtém avaliações por atração turística",
-      //     description: "Obtém todas as avaliações para uma atração turística específica",
-      //     operationId: "getReviewsByTouristAttractionId",
-      //     parameters: [
-      //       {
-      //         name: "TouristAttractionId",
-      //         in: "path",
-      //         required: true,
-      //         description: "ID da atração turística",
-      //         schema: {
-      //           type: "string",
-      //         },
-      //       },
-      //     ],
-      //     responses: {
-      //       200: {
-      //         description: "Lista de avaliações",
-      //         content: {
-      //           "application/json": {
-      //             schema: {
-      //               type: "array",
-      //               items: {
-      //                 $ref: "#/components/schemas/Review",
-      //               },
-      //             },
-      //           },
-      //         },
-      //       },
-      //       404: {
-      //         description: "Avaliações não encontradas",
-      //       },
-      //     },
-      //   },
-      // },
-      "/reviews/user": {
-        get: {
-          summary: "Obtém avaliações do usuário",
-          description:
-            "Obtém todas as avaliações feitas pelo usuário autenticado",
-          operationId: "getUserReviews",
-          responses: {
-            200: {
-              description: "Lista de avaliações do usuário",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "array",
-                    items: {
-                      $ref: "#/components/schemas/Review",
-                    },
-                  },
-                },
-              },
-            },
-            401: {
-              description: "Token não fornecido ou inválido",
-            },
-          },
-          security: [
-            {
-              bearerAuth: [],
-            },
-          ],
-        },
-      },
-      "/reviews/{reviewId}": {
-        delete: {
-          summary: "Deleta uma avaliação",
-          description: "Deleta uma avaliação específica pelo ID",
-          operationId: "deleteReview",
-          parameters: [
-            {
-              name: "reviewId",
-              in: "path",
-              required: true,
-              description: "ID da avaliação",
-              schema: {
-                type: "string",
-              },
-            },
-          ],
-          responses: {
-            200: {
-              description: "Avaliação deletada com sucesso",
-            },
-            404: {
-              description: "Avaliação não encontrada",
-            },
-          },
-          security: [
-            {
-              bearerAuth: [],
-            },
-          ],
-        },
-      },
-    },
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-        },
-      },
-      schemas: {
-        TouristAttraction: {
-          type: "object",
-          properties: {
-            name: {
-              type: "string",
-              description: "Nome da atração turística",
-            },
-            address: {
-              type: "string",
-              description: "Endereço da atração turística",
-            },
-            openingHours: {
-              type: "string",
-              description: "Horário de funcionamento da atração turística",
-            },
-            typeOfAttraction: {
-              type: "string",
-              description: "Tipo de atração turística",
-            },
-            description: {
-              type: "string",
-              description: "Descrição da atração turística",
-            },
-          },
-        },
-        User: {
-          type: "object",
-          properties: {
-            name: {
-              type: "string",
-              description: "Nome do usuário",
-            },
-            email: {
-              type: "string",
-              description: "Email do usuário",
-            },
-            password: {
-              type: "string",
-              description: "Senha do usuário",
-            },
-            city: {
-              type: "string",
-              description: "Cidade do usuário",
-            },
-            state: {
-              type: "string",
-              description: "Estado do usuário",
-            },
-          },
-          required: ["name", "email", "password"],
-        },
-        TokenResponse: {
-          type: "object",
-          properties: {
-            token: {
-              type: "string",
-              description: "Token de autenticação",
-            },
-          },
-        },
-        PasswordChangeResponse: {
-          type: "object",
-          properties: {
-            message: {
-              type: "string",
-              description: "Mensagem de confirmação de alteração de senha",
-            },
-          },
-        },
-        Review: {
-          type: "object",
-          properties: {
-            userId: {
-              type: "string",
-              description: "ID do usuário que fez a avaliação",
-            },
-            TouristAttractionId: {
-              type: "string",
-              description: "ID da atração turística avaliada",
-            },
-            rating: {
-              type: "number",
-              description: "Classificação da atração turística",
-              minimum: 1,
-              maximum: 5,
-            },
-          },
-          required: ["userId", "TouristAttractionId", "rating"],
         },
       },
     },
